@@ -176,7 +176,7 @@ class UpdateWarehousesCommand extends Command
                 'city_type_uk' => $item['SettlementTypeDescription'],
                 'phone' => $item['Phone'],
                 'active' => $active,
-            ]
+            ];
 
             if($exist = NovaPoshtaWarehouse::whereRef($item['Ref'])->first()) {
                 //update warehouse
