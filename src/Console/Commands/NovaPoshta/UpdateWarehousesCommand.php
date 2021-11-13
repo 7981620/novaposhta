@@ -156,37 +156,47 @@ class UpdateWarehousesCommand extends Command
                 $active = true;
             }
 
-            try {
-                NovaPoshtaWarehouse::updateOrCreate(
-                    [
-                        'ref' => $item['Ref']
-                    ],
-                    [
-                        'type_ref' => $typeRef,
-                        'city_ref' => $item['CityRef'],
-                        'description_ru' => $item['DescriptionRu'],
-                        'description_uk' => $item['Description'],
-                        'short_address_ru' => $item['ShortAddressRu'],
-                        'short_address_uk' => $item['ShortAddress'],
-                        'number' => $item['Number'],
-                        'city_uk' => $item['CityDescription'],
-                        'city_ru' => $item['CityDescriptionRu'],
-                        'latitude' => $item['Latitude'],
-                        'longitude' => $item['Longitude'],
-                        'pos_terminal' => (int) $item['POSTerminal'],
-                        'max_weight' => $item['TotalMaxWeightAllowed'],
-                        'region' => $item['SettlementAreaDescription'],
-                        'city_type_ru' => $item['SettlementTypeDescriptionRu'],
-                        'city_type_uk' => $item['SettlementTypeDescription'],
-                        'phone' => $item['Phone'],
-                        'active' => $active,
-                    ]
-                );
 
-            } catch (\Exception $exception) {
-                Log::error('NovaPoshta warehouses update: '.$exception->getMessage());
-                $this->error($exception->getMessage());
-                return;
+            $data = [
+                'type_ref' => $typeRef,
+                'city_ref' => $item['CityRef'],
+                'description_ru' => $item['DescriptionRu'],
+                'description_uk' => $item['Description'],
+                'short_address_ru' => $item['ShortAddressRu'],
+                'short_address_uk' => $item['ShortAddress'],
+                'number' => $item['Number'],
+                'city_uk' => $item['CityDescription'],
+                'city_ru' => $item['CityDescriptionRu'],
+                'latitude' => $item['Latitude'],
+                'longitude' => $item['Longitude'],
+                'pos_terminal' => (int) $item['POSTerminal'],
+                'max_weight' => $item['TotalMaxWeightAllowed'],
+                'region' => $item['SettlementAreaDescription'],
+                'city_type_ru' => $item['SettlementTypeDescriptionRu'],
+                'city_type_uk' => $item['SettlementTypeDescription'],
+                'phone' => $item['Phone'],
+                'active' => $active,
+            ]
+
+            if($exist = NovaPoshtaWarehouse::whereRef($item['Ref'])->first()) {
+                //update warehouse
+                try {
+                    $exist->update($data);
+                } catch (\Exception $exception) {
+                    Log::error('NovaPoshta warehouses update: '.$exception->getMessage());
+                    $this->error($exception->getMessage());
+                    return;
+                }
+    
+            } else {
+                //create new Warehouse
+                try {
+                    NovaPoshtaWarehouse::create($data);
+                } catch (\Exception $exception) {
+                    Log::error('NovaPoshta warehouses create: '.$exception->getMessage());
+                    $this->error($exception->getMessage());
+                    return;
+                }
             }
 
         }
