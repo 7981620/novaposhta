@@ -190,6 +190,7 @@ class UpdateWarehousesCommand extends Command
     
             } else {
                 //create new Warehouse
+                $data['ref'] = $item['Ref'];
                 try {
                     NovaPoshtaWarehouse::create($data);
                 } catch (\Exception $exception) {
