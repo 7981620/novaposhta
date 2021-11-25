@@ -178,15 +178,17 @@ class UpdateWarehousesCommand extends Command
                 'active' => $active,
             ];
 
-            if($exist = NovaPoshtaWarehouse::whereRef($item['Ref'])->first()) {
+            if($exist = NovaPoshtaWarehouse::where('ref', $item['Ref'])->first()) {
+
                 //update warehouse
                 try {
                     $exist->update($data);
                 } catch (\Exception $exception) {
                     Log::error('NovaPoshta warehouses update: '.$exception->getMessage());
                     $this->error($exception->getMessage());
-                    return;
+                    continue;
                 }
+
     
             } else {
                 //create new Warehouse
@@ -196,7 +198,7 @@ class UpdateWarehousesCommand extends Command
                 } catch (\Exception $exception) {
                     Log::error('NovaPoshta warehouses create: '.$exception->getMessage());
                     $this->error($exception->getMessage());
-                    return;
+                    continue;
                 }
             }
 
