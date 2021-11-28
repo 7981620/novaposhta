@@ -147,8 +147,11 @@ class UpdateWarehousesCommand extends Command
             // если нет, и такой есть в базе - он будет удален
             if (!in_array($typeRef, $this->import_types, true)) {
                 if ($deleteWarehouse = NovaPoshtaWarehouse::whereRef($item['Ref'])->first()) {
-                    $deleteWarehouse->delete();
+                    $deleteWarehouse->delete();            
+                    continue;
                 }
+
+                continue;
             }
 
             $active = false;
