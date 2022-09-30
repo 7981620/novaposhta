@@ -31,6 +31,11 @@ class ImportCitiesCommand extends Command
         $adr->setLimit(1);
         $adr->setPage(1);
         $citiesCount = $adr->getCities();
+        if(!isset($citiesCount['info']) | !isset($citiesCount['info']['totalCount'])) {
+            Log::info("NP: not get total count of cities");
+            $this->warn('not get total count of cities');
+            return;
+        }
         $totalCities = $citiesCount['info']['totalCount'];
         $pagesTotal = (int) ceil($totalCities / $this->resCount);
         $this->info('Населенных пунктов '.$totalCities . ', страниц для обработки - ' . $pagesTotal);
